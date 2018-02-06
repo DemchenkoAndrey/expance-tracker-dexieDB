@@ -12,12 +12,13 @@ export class HomePage {
 
   expenses: Expense[];
 
-  constructor(private navCtrl: NavController,
-              private expenseService: ExpenseService) {
+  constructor(public navCtrl: NavController,
+              public expenseService: ExpenseService) {
     this.expenses = expenseService.expenses;
   }
 
   onItemClick(expense: Expense){
+    console.log('expense:', expense);
     this.navCtrl.push(DetailPage, {
       expenseId: expense.id
     });
