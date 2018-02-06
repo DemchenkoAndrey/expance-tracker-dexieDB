@@ -13,11 +13,14 @@ export class HomePage {
   expenses: Expense[];
 
   constructor(public navCtrl: NavController,
-              public expenseService: ExpenseService) {
-    this.expenses = expenseService.expenses;
+    public expenseService: ExpenseService) { }
+
+  ionViewWillEnter() {
+    this.expenseService.getExpenses()
+    .then(expenses => this.expenses = expenses);
   }
 
-  onItemClick(expense: Expense){
+  onItemClick(expense: Expense) {
     console.log('expense:', expense);
     this.navCtrl.push(DetailPage, {
       expenseId: expense.id

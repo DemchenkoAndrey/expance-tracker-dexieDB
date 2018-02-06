@@ -18,16 +18,16 @@ export class DetailPage {
               public alertCtrl: AlertController,
               public expenseService: ExpenseService) {
     this.categories = expenseService.categories;
+    this.expense = {
+      date: '',
+      amount: 0,
+      category: '',
+      description: ''
+    };
     const expenseId = navParams.get('expenseId');
     if (expenseId) {
-      this.expense = expenseService.getExpence(expenseId);
-    } else {
-      this.expense = {
-        date: '',
-        amount: 0,
-        category: '',
-        description: ''
-      }
+      expenseService.getExpense(expenseId)
+          .then(expense => this.expense = expense);
     }
   }
 

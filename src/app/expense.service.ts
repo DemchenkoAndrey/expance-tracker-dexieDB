@@ -1,42 +1,42 @@
 import { Expense } from './expense.model'
 import uuidV4 from 'uuid/v4';
+import Dexie from 'dexie';
 
-export class ExpenseService {
+export class ExpenseService extends Dexie{
 
+  expenses: Dexie.Table<Expense, string>;
   categories = ['Food', 'Travel', 'Other'];
-  expenses = this.loadExpenses();
+
+  constructor() {
+    super('expense_tracker');
+    this.version(1).stores({
+      expenses: 'id, date'
+    });
+  }
 
   addExpense(expense: Expense) {
     expense.id = uuidV4();
-    this.expenses.push(expense);
-    this.storeExpenses();
+    this.expenses.add(expense);
   }
-  getExpence(expenseId: string) {
-    const expense = this.expenses.find(it => it.id === expenseId);
-    return Object.assign({}, expense);
+  getExpense(expenseId: string): Dexie.Promise<Expense> {
+    return this.expenses.get(expenseId);
   }
+
+  getExpenses(): Dexie.Promise<Expense[]> {
+    return this.expenses.toArray();
+  }
+
   updateExpense(expense: Expense) {
-    const index = this.expenses.findIndex(it => it.id === expense.id);
-    this.expenses[index] = expense;
-    this.storeExpenses();
+    this.expenses.update(expense.id, expense);
   }
   removeExpense(expenseId: string) {
-    const index = this.expenses.findIndex(it => it.id === expenseId);
-    this.expenses.splice(index, 1);
-    this.storeExpenses();
+    this.expenses.delete(expenseId);
   }
 
-  private loadExpenses(): Expense[] {
-    const expenses = localStorage.getItem('expenses');
-    if (expenses) {
-      return JSON.parse(expenses);
-    } else {
-      return [];
-    }
-  }
-
-  private storeExpenses() {
-    localStorage.setItem('expenses', JSON.stringify(this.expenses));
-  }
-
+      // const index = this.expenses.findIndex(it => it.id === expenseId);
+      // localStorage.setItem('expenses', JSON.stringify(this.expenses));
+      // const expenses = localStorage.getItem('expenses');
+      //   if (expenses) {
+      //     return JSON.parse(expenses);
+      //   }
 }
