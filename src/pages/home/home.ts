@@ -1,41 +1,29 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { DetailPage } from '../detail/detail'
+import { ExpenseService } from '../../app/expense.service';
+import { Expense } from '../../app/expense.model';
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
 
-  expenses = [
-    {
-      date: '2016-01-01',
-      amount: 7.25,
-      category: 'Food',
-      description: 'Lunch'
-    },
-    {
-      date: '2016-01-02',
-      amount: 17.25,
-      category: 'Travel',
-      description: 'Train ticket'
-    },
-    {
-      date: '2016-01-02',
-      amount: 9.25,
-      category: 'Food',
-      description: 'Dinner'
-    }
-  ];
-  constructor(private navCtrl: NavController) {
+  expenses: Expense[];
 
+  constructor(private navCtrl: NavController,
+              private expenseService: ExpenseService) {
+    this.expenses = expenseService.expenses;
   }
 
-  onItemClick(expense){
-    console.log('item clicked:', expense);
+  onItemClick(expense: Expense){
     this.navCtrl.push(DetailPage, {
-      expense: expense
+      expenseId: expense.id
     });
+  }
+  onAddClick() {
+    this.navCtrl.push(DetailPage);
   }
 
 }
